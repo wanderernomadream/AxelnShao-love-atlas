@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Atlas | 2017 - 2026</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; display: flex; height: 100vh; background: #faf7f2; color: #332d29; }
+        #sidebar { width: 35%; height: 100%; overflow-y: auto; padding: 25px 20px; background: #ffffff; box-shadow: 2px 0 10px rgba(0,0,0,0.08); z-index: 1000; }
+        #map { width: 65%; height: 100%; }
+        h1 { font-size: 1.6rem; color: #5c3a21; margin-bottom: 25px; text-align: center; font-weight: 700; }
+        .timeline-item { background: #fdfbf7; border-left: 4px solid #bc6c25; padding: 16px; margin-bottom: 18px; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; }
+        .timeline-item:hover { background: #f4ebd9; transform: translateX(5px); }
+        .year { font-weight: 700; color: #8b5e34; font-size: 0.85rem; }
+        .title { font-size: 1.05rem; color: #332d29; margin: 6px 0; font-weight: 600; }
+        .desc { font-size: 0.88rem; color: #666; line-height: 1.4; }
+        
+        /* 媒體彈窗樣式 */
+        .popup-card { width: 240px; text-align: center; }
+        .media-container { position: relative; width: 100%; height: 160px; margin-bottom: 8px; border-radius: 6px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
+        .media-container img, .media-container video { width: 100%; height: 100%; object-fit: contain; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; border: none; padding: 6px 9px; cursor: pointer; font-size: 12px; border-radius: 3px; z-index: 10; }
+        .carousel-btn.prev { left: 5px; }
+        .carousel-btn.next { right: 5px; }
+        .popup-card h3 { color: #5c3a21; margin-bottom: 5px; font-size: 1.05rem; }
+        .popup-card p { font-size: 0.82rem; color: #444; line-height: 1.3; }
+
+        /* Coupon 專屬樣式 */
+        .coupon-section { margin-top: 30px; border-top: 2px dashed #e0d6c3; padding-top: 20px; }
+        .coupon-section h2 { font-size: 1.2rem; color: #5c3a21; margin-bottom: 15px; text-align: center; }
+        .coupon-card { background: #fff8f0; border: 2px dashed #bc6c25; border-radius: 8px; padding: 15px; margin-bottom: 12px; position: relative; }
+        .coupon-title { font-size: 1rem; font-weight: bold; color: #8b5e34; }
+        .coupon-desc { font-size: 0.82rem; color: #666; margin: 5px 0 10px 0; line-height: 1.3; }
+        .coupon-btn { background: #bc6c25; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s; }
+        .coupon-btn:hover { background: #9d561b; }
+        .coupon-btn.used { background: #ccc; cursor: not-allowed; }
+
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h1>✨ Our Love Atlas</h1>
+    
+    <!-- 可以在陣列裡同時放 .jpg 和 .mp4 -->
+    <div class="timeline-item" onclick="flyToLocation(48.8841, 2.3684, 'Paris, 2017', 'Where it all began at St-Christopher\'s Canal. Talking all night long, from planet to other universe. I think I am attracted to you from that moment.  You invited me to a bar the next day, and i still remembered the feeling of walking downstairs to the bar with your arm around my waist. I also remember you were singing Foxy Girl the last day.', 
+    ['images/2017-paris-christopher-1.jpg', 'images/2017-paris-christopher-2.jpg', 'images/2017-paris-christopher-3.jpg', 'images/2017-paris-christopher-4.jpg', 'images/2017-paris-christopher-5.jpg', 'images/2017-paris-christopher-6.jpg', 'images/2017-paris-christopher-7.jpg', 'images/2017-paris-christopher-8.jpg', 'images/2017-paris-street-1.JPG', 'images/2017-paris-street-2.JPG', 'images/2017-paris-street-3.JPG', 'images/2017-paris-street-4.JPG', 'images/2017-paris-street-5.MP4'])">
+        <div class="year">2017</div>
+        <div class="title">📍 Paris · Canal & Bar</div>
+        <div class="desc">The night we met, talked until dawn, and that special song...</div>
+    </div>
+
+    <div class="timeline-item" onclick="flyToLocation(43.9493, 4.8055, 'Avignon, 2018', 'A bit sweet and bitter summer, crossing cities just to see you again. Our unforgettable summer chapter. It always throws me back this moment whenever I listen to Hennesy & Sailor Moon.', 
+    ['images/2018-avignon-5.jpeg', 'images/2018-avignon-dancing.mp4', 'images/2018-avignon-1.jpeg', 'images/2018-avignon-3.jpeg', 'images/2018-avignon-4.jpeg', 'images/2018-avignon-6.jpeg', 'images/2018-avignon-7.jpeg', 'images/2018-avignon-8.jpeg' ])">
+        <div class="year">2018</div>
+        <div class="title">📍 Avignon</div>
+        <div class="desc">Reuniting in your city for a summer adventure.</div>
+    </div>
+
+    <div class="timeline-item" onclick="flyToLocation(48.8566, 2.3522, 'Paris Metro, 2019', 'Saying goodbye at the metro station. I thought it was going to be the last time we\'d see each other. I still remember you pressing your face against the glass door, making funny exaggerated faces just to say goodbye to me. ', 
+    ['images/2019-Paris-metro-1.jpeg', 'images/2019-Paris-metro-2.jpeg', 'images/2019-Paris-metro-3.jpeg', 'images/2019-Paris-metro-4.jpeg', 'images/2019-Paris-metro-5.jpeg', 'images/2019-Paris-metro-6.jpeg', 'images/2019-Paris-metro-7.jpeg', 'images/2019-Paris-metro-8.jpeg', 'images/2019-Paris-metro-9.jpeg', 'images/2019-Paris-metro-10.jpeg', 'images/2019-Paris-metro-11.jpeg'])">
+        <div class="year">2019</div>
+        <div class="title">📍 Paris Metro</div>
+        <div class="desc">Dramatic goodbyes and memories sealed in a photo.</div>
+    </div>
+
+    <div class="timeline-item" onclick="flyToLocation(25.0330, 121.5654, 'Taiwan, 2023', 'And then 3.5 years later, we met again! The sweetest surprise visit at my café before your flight to Japan.', 
+    ['images/2023-Taiwan-Taipei-5.jpeg', 'images/2023-Taiwan-Taipei-Cafe.mp4', 'images/2023-Taiwan-Taipei-1.jpeg', 'images/2023-Taiwan-Taipei-2.jpeg', 'images/2023-Taiwan-Taipei-3.jpeg', 'images/2023-Taiwan-Taipei-4.jpeg', 'images/2023-Taiwan-Taipei-Street.mp4'])">
+        <div class="year">2023</div>
+        <div class="title">📍 Taiwan · Café Surprise</div>
+        <div class="desc">A layover surprise that made my whole day.</div>
+    </div>
+
+    <div class="timeline-item" onclick="flyToLocation(53.3498, -6.2603, 'Dublin, 2026', 'Another 3 years, you came to the city i\'m living in. Late-night walks around Dublin together became one of my most treasured memories. I can\'t help but keep thinking back to the feeling of you cuddling me from behind. Ever since you left, I\'ve wanted to go back to that moment every single night.',
+    ['images/2026-Dublin-1.jpeg', 'images/2026-Dublin-2.jpeg', 'images/2026-Dublin-4.jpeg', 'images/2026-Dublin-Club-1.mp4', 'images/2026-Dublin-Club-2.mp4', 'images/2026-Dublin-Club-3.mp4', 'images/2026-Dublin-Club-4.mp4', 'images/2026-Token-1.mp4', 'images/2026-Dublin-Token-2.mp4', 'images/2026-Dublin-Token-3.mp4', 'images/2026-Dublin-PowerCourt-1.mp4', 'images/2026-Dublin-PowerCourt-2.mp4' ])">
+        <div class="year">2026</div>
+        <div class="title">📍 Dublin · 3 Days & 2 Nights</div>
+        <div class="desc">Reuniting and creating new memories in Dublin.</div>
+    </div>
+
+    <div class="timeline-item" onclick="flyToLocation(35.6762, 139.6503, 'Tokyo, 2026', 'After three months of endless calls, we finally met in Tokyo as a couple. We\'ve done so many things for the first time together. I even thought about staying longer just to spend more time with you. I loved seeing how excited you were to show off our rings to your friends and tell our story to strangers.❤️', 
+    ['images/2026-Tokyo-1.jpeg', 'images/2026-Tokyo-street.mp4', 'images/2026-Tokyo-8.jpeg', 'images/2026-Tokyo-4.jpeg', 'images/2026-Tokyo-5.jpeg', 'images/2026-Tokyo-Ueno Park.mp4', 'images/2026-Tokyo-2.jpeg', 'images/2026-Tokyo-3.jpeg', 'images/2026-Tokyo-Kaboo\'s.mp4', 'images/2026-Tokyo-6.jpeg', 'images/2026-Tokyo-7.jpeg' ])">
+        <div class="year">2026</div>
+        <div class="title">📍 Tokyo · Summer Reunion</div>
+        <div class="desc">Flying across the world. Our journey continues...</div>
+    </div>
+
+    <!-- Coupons Section -->
+    <div class="coupon-section">
+        <h2>🎟️ Birthday Coupons</h2>
+        
+        <!-- Coupon 1 -->
+        <div class="coupon-card">
+            <div class="coupon-title">👑 King for a Day</div>
+            <div class="coupon-desc">Valid for 24 hours. Your wish is my command!</div>
+            <!-- 參數順序：(this, '卡片名稱', '問他的問題', '正確答案') -->
+            <button class="coupon-btn" onclick="redeemCoupon(this, 'King for a Day', 'Where did we meet for the first time?', 'St.Christopher inn')">Redeem Coupon</button>
+        </div>
+
+        <!-- Coupon 2 -->
+        <div class="coupon-card">
+            <div class="coupon-title">💆 Unlimited Massage & Hugs</div>
+            <div class="coupon-desc">Entitles you to an unlimited cozy massage & extra long hugs anytime.</div>
+            <button class="coupon-btn" onclick="redeemCoupon(this, 'Unlimited Massage & Hugs', 'Where did we meet after we are officialy being together?', 'tokyo')">Redeem Coupon</button>
+        </div>
+    </div>
+</div>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const map = L.map('map').setView([48.8566, 2.3522], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    let currentMedia = [];
+    let currentIdx = 0;
+
+    function isVideo(path) {
+        const lowerPath = path.toLowerCase();
+        return lowerPath.endsWith('.mp4') || lowerPath.endsWith('.mov') || lowerPath.endsWith('.webm');
+    }
+
+    function renderMediaTag(path) {
+        if (isVideo(path)) {
+            return `
+                <video controls autoplay loop muted playsinline style="width:100%; height:100%; object-fit:contain;">
+                    <source src="${path}" type="video/mp4">
+                    <source src="${path}" type="video/quicktime">
+                </video>
+            `;
+        } else {
+            return `<img src="${path}" onerror="this.src='https://via.placeholder.com/240x160?text=Our+Memory';" style="width:100%; height:100%; object-fit:contain;">`;
+        }
+    }
+
+    function flyToLocation(lat, lng, title, desc, mediaList) {
+        map.flyTo([lat, lng], 12, { duration: 2 });
+        
+        currentMedia = mediaList;
+        currentIdx = 0;
+
+        const hasMultiple = mediaList.length > 1;
+        // 關鍵修復：在 onclick 加上 event.stopPropagation() 防止彈窗關閉
+        const btnPrevHtml = hasMultiple ? `<button class="carousel-btn prev" onclick="event.stopPropagation(); changeMedia(-1);">❮</button>` : '';
+        const btnNextHtml = hasMultiple ? `<button class="carousel-btn next" onclick="event.stopPropagation(); changeMedia(1);">❯</button>` : '';
+
+        const content = `
+            <div class="popup-card">
+                <div class="media-container" id="media-box" onclick="event.stopPropagation();">
+                    ${btnPrevHtml}
+                    ${renderMediaTag(mediaList[0])}
+                    ${btnNextHtml}
+                </div>
+                <h3>${title}</h3>
+                <p>${desc}</p>
+            </div>
+        `;
+
+        L.popup()
+            .setLatLng([lat, lng])
+            .setContent(content)
+            .openOn(map);
+    }
+
+    function changeMedia(direction) {
+        currentIdx = (currentIdx + direction + currentMedia.length) % currentMedia.length;
+        const mediaBox = document.getElementById('media-box');
+        const hasMultiple = currentMedia.length > 1;
+        const btnPrevHtml = hasMultiple ? `<button class="carousel-btn prev" onclick="event.stopPropagation(); changeMedia(-1);">❮</button>` : '';
+        const btnNextHtml = hasMultiple ? `<button class="carousel-btn next" onclick="event.stopPropagation(); changeMedia(1);">❯</button>` : '';
+        
+        mediaBox.innerHTML = `
+            ${btnPrevHtml}
+            ${renderMediaTag(currentMedia[currentIdx])}
+            ${btnNextHtml}
+        `;
+    }
+
+    // 兌換券 + 小問答邏輯
+    function redeemCoupon(btnElement, couponName, question, correctAnswer) {
+        // 1. 跳出輸入框問他問題
+        let answer = prompt(`🔒 Coupon Security Check:\n\n${question}`);
+
+        // 如果按取消或沒輸入任何文字
+        if (answer === null) return;
+
+        // 2. 檢查答案（自動去除前後空白並轉小寫，比較寬容）
+        if (answer.trim().toLowerCase() === correctAnswer.toLowerCase()) {
+            // 答對了！
+            alert(`🎉 Correct!\n\nYou just activated: "${couponName}"!\n\nTake a screenshot now and send it to your girlfriend to claim it! ❤️`);
+            btnElement.innerText = "✓ Redeemed";
+            btnElement.classList.add("used");
+            btnElement.disabled = true;
+        } else {
+            // 答錯了！
+            alert("❌ Oops! Wrong answer~ Try again or ask your girlfriend for a hint! 😉");
+        }
+    }
+</script>
+</body>
+</html>
